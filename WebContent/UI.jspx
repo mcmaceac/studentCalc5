@@ -18,7 +18,7 @@
 <body>
 	<form action="" method="POST" onsubmit="return validate();">
 		<fieldset>
-			<legend>${legendName}</legend>
+			<legend>${initParam['legendName']}</legend>
 			<table>
 				<tr>
 					<td class="error">
@@ -69,8 +69,18 @@
 					</td>
 				</tr>
 				
+				<td id="ajaxResult">
+					
+				</td>
+				
 				<tr>
 					<td><input type="submit" value="Submit" name="submit"/></td>
+					<td>
+						<button name="ajax" value="true" 
+								onclick="doSimpleAjax('/studentCalc5/Startup/Ajax/');return false;">
+							Submit (Ajax)
+						</button>
+					</td>
 				</tr>
 			</table>
 		</fieldset>

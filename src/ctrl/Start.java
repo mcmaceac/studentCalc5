@@ -89,16 +89,34 @@ public class Start extends HttpServlet {
 		
 		errorMessage = null;
 		//submit was not pressed, so we forward to the start page
-		if (request.getParameter("submit") == null) {
-			request.getRequestDispatcher(startPage).forward(request, response);
-		}
-		else {	//submit has been pressed, compute the result
+		
+		if (request.getRequestURI().indexOf("Ajax") >= 0) {
+			System.out.println("Ajax request detected!");
 			computePayment(request);
-			if (errorMessage == null) {
-				request.getRequestDispatcher(resultsPage).forward(request, response);
-			}
-			else {
+			response.setContentType("text/plain");
+			response.setCharacterEncoding("UTF-8");
+			//response.getWriter().write("Testing response");
+			
+			PrintWriter out = response.getWriter();
+			
+			out.println("<tr><td>Grace Period Interest:</td><td></tr>");
+			out.println("<f:formatNumber type=\"currency\" currencySymbol=\"$\">");
+			out.println(graceInterest + "</f:formatNumber></td></tr>");
+			out.println("<br/><tr><td>Monthly Payments:</td>");
+			out.println("<td><f:formatNumber type=\"currency\" currencySymbol=\"$\">" + monthlyPayments + "</f:formatNumber></td></tr>");
+		}
+		else {
+			if (request.getParameter("submit") == null) {
 				request.getRequestDispatcher(startPage).forward(request, response);
+			}
+			else {	//submit has been pressed, compute the result
+				computePayment(request);
+				if (errorMessage == null) {
+					request.getRequestDispatcher(resultsPage).forward(request, response);
+				}
+				else {
+					request.getRequestDispatcher(startPage).forward(request, response);
+				}
 			}
 		}
 		//The below code is to generate an exception to test the exception page

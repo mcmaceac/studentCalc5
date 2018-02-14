@@ -43,21 +43,27 @@ public class Throttle implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		boolean enabled = false;
-		HttpServletRequest req = (HttpServletRequest) request;
 		
-		long lastTime = req.getSession().getLastAccessedTime();
-		long currTime = System.currentTimeMillis();
-		
-		long timeBetween = (currTime - lastTime);
-		
-		System.out.println("Time between requests: " + timeBetween);
-		
-		if (timeBetween < 1000) {
-			request.getRequestDispatcher(TRY_AGAIN).forward(request, response);
+		if (enabled) {
+			HttpServletRequest req = (HttpServletRequest) request;
+			
+			long lastTime = req.getSession().getLastAccessedTime();
+			long currTime = System.currentTimeMillis();
+			
+			long timeBetween = (currTime - lastTime);
+			
+			System.out.println("Time between requests: " + timeBetween);
+			
+			if (timeBetween < 1000) {
+				request.getRequestDispatcher(TRY_AGAIN).forward(request, response);
+			}
+			else {
+				// pass the request along the filter chain
+				chain.doFilter(request, response);	
+			}
 		}
 		else {
-			// pass the request along the filter chain
-			chain.doFilter(request, response);	
+			chain.doFilter(request, response);
 		}
 	}
 
